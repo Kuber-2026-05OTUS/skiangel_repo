@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: homework
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /usr/share/html/index.html
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "rm /usr/share/nginx/html/index.html"]
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      initContainers:
+      - name: init
+        image: busybox:latest
+        command: ["sh", "-c", "echo '<html><body><h1>Тест</h1></body></html>' > /init/index.html"]
+        volumeMounts:
+          - name: html
+            mountPath: /init
+      volumes:
+        - name: html
+          emptyDir: {}
+      nodeSelector:
+          worknode: first
+  strategy:
+   type: RollingUpdate
+   rollingUpdate:
+     maxUnavailable: 1
+     maxSurge: 2
