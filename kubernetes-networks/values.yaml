@@ -8,6 +8,9 @@ providers:
   kubernetesGateway:
     enabled: true
 gateway:
+  enabled: true
+  experimental:
+    enabled: true
   listeners:
     web:
       namespacePolicy:
