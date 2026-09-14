@@ -26,11 +26,12 @@ helm repo add traefik https://traefik.github.io/charts
 helm repo update
 helm install traefik traefik/traefik -f values.yaml --wait
 kubectl apply -f gateway.yaml
+kubectl apply -f httproute.yaml
 ```
+После этого если из бизибокса внутри кластера обращаюсь на внутренний адрес gateway, то получаю ответ от конечного 
+nginx. Однако, как внешний адрес навесить на Traefik, я так и не разобрался пока, он у меня висит вот в таком 
+состоянии:
 
-Здесь я окончательно запутался. Никак в голове не сложится картина сетевого взаимодействия.
-Насколько я понимаю, traefik  должен повиснуть на каком-то внешнем ip, чтобы слушать обращения.
-Но он висит в статусе pending на External IP
 ```
 denis@k8s01:~/docs/otus_git/skiangel_repo/kubernetes-networks$ kubectl get svc -A
 NAMESPACE     NAME            TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
@@ -39,5 +40,4 @@ default       traefik         LoadBalancer   10.105.145.165   <pending>     80:3
 homework      nginx-service   ClusterIP      10.96.104.94     <none>        80/TCP                       21m
 kube-system   kube-dns        ClusterIP      10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP       21m
 ```
-Соответственно, обратиться я к нему не могу. Из бизибокса тоже отклика на нем не вижу, вернее, на 80 порту он отдает 404 ошибку.
-Кажется, я чего-то не доделываю, не пойму, чего.
+Соответственно, обратиться я к нему не могу. 
