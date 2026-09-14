@@ -1,7 +1,7 @@
 ingressRoute:
   dashboard:
     enabled: true
-    matchRule: Host(`demo.otus`)
+    matchRule: Host(`demo1.otus`)
     entryPoints:
       - web
 providers:
