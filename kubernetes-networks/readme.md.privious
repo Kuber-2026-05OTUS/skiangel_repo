@@ -1,0 +1,47 @@
+## подготовка ##
+
+Выполняем действия из предыдущего урока. Для краткости собрал необходимое в start.sh
+
+### пытаюсь создать Service clusterIP ###
+```
+kubectl apply -f service.yaml
+```
+
+В выводе kubectl get svc -A вижу:
+```
+default       nginx-service   ClusterIP      10.102.204.123   <none>        80/TCP                       24m
+```
+
+### gatewayAPI / Traefik ###
+
+Добавляем Kubernetes Gateway API CRDs:
+```
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
+```
+
+Создаем gatewayClass:
+```
+kubectl apply -f gatewayClass.yaml
+```
+
+Создаем values.yaml с необходимыми значениями.
+Устанавливаем  Traefik
+```
+helm repo add traefik https://traefik.github.io/charts
+helm repo update
+helm install traefik traefik/traefik -f values.yaml --wait
+kubectl apply -f gateway.yaml
+```
+
+
+
+И все на этом работа останавливается, я не могу получить трафик с этого IP до подов, если рпытаюсь стучаться из бизибокса, развернутого на этом же
+кластере, вижу в ответе
+
+```
+# wget -q -O- http://nginx-service
+wget: can't connect to remote host (10.102.204.123): Connection refused
+```
+
+Пинг на адрес не идет. Соответственно, дальше двигаться не могу, прошу помощи.
+Я пытался там прикрутить GatewayAPI с traefik, не преуспел.
