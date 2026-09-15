@@ -6,6 +6,10 @@ metadata:
   labels:
     app: busybox
 spec:
+  hostAliases:
+  - ip: "10.108.188.102"
+    hostnames:
+    - "demo.otus"
   containers:
   - name: busybox
     image: busybox:latest

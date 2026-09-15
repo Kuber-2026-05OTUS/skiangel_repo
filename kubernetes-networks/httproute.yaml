@@ -9,11 +9,25 @@ spec:
       namespace: default
   hostnames:
     - "demo.otus"
+    - "homework.otus"
   rules:
     - matches:
         - path:
             type: PathPrefix
             value: /
+      backendRefs:
+        - name: nginx-service
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /homepage
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: nginx-service
           port: 80
