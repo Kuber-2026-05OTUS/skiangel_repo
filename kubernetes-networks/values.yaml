@@ -1,0 +1,17 @@
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`demo1.otus`)
+    entryPoints:
+      - web
+providers:
+  kubernetesGateway:
+    enabled: true
+gateway:
+  enabled: true
+  experimental:
+    enabled: true
+  listeners:
+    web:
+      namespacePolicy:
+        from: All
